@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+
+// --- IMPORTAÇÕES DE ESTILO (A "ROUPA" DO PROJETO) ---
+import "primereact/resources/themes/lara-light-blue/theme.css";     // Tema visual moderno
+import "primereact/resources/primereact.min.css";                  // Base dos componentes
+import "primeicons/primeicons.css";                                // Ícones (carrinho, plus, etc)
+import "/node_modules/primeflex/primeflex.css";                   // Sistema de colunas e margens
+
+// --- IMPORTAÇÕES DOS NOSSOS COMPONENTES ---
+import ProductList from './components/ProductList';
+import ProductForm from './components/ProductForms';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Criamos o estado 'products' que vai guardar nossa lista de aquarelas/produtos.
+  // Começa como um array vazio [].
+  const [products, setProducts] = useState([]);
+
+  // Função que recebe um novo produto do formulário e coloca na lista
+  const addProduct = (newProduct) => {
+    // Usamos o 'spread operator' (...) para manter os antigos e adicionar o novo no topo
+    setProducts([newProduct, ...products]); 
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    // 'surface-ground' dá um fundo cinza claro profissional, 'p-5' é o espaçamento
+    <div className="p-5 surface-ground min-h-screen">
+      <div className="container mx-auto">
+        <h1 className="text-center text-4xl mb-5 text-primary font-bold">
+          <i className="pi pi-palette mr-2"></i> {/* Ícone de paleta de cores */}
+          Ateliê de Aquarela & Cia
+        </h1>
+        
+        {/* Passamos a função de adicionar como uma "prop" chamada onAddProduct */}
+        <ProductForm onAddProduct={addProduct} />
+        
+        {/* Passamos a lista e a função de atualizar para o componente de listagem */}
+        <ProductList products={products} setProducts={setProducts} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
