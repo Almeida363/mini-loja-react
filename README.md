@@ -62,4 +62,8 @@ Personalização: Adaptação de uma API genérica para um nicho específico (Ar
 
 UX/UI: Uso de cores harmônicas e feedbacks visuais para o usuário.
 
+<<<<<<< HEAD
 Desenvolvido com ☕ e código durante as aulas de Desenvolvimento Web.
+=======
+Desenvolvido com ☕ e código durante as aulas de Desenvolvimento Web.
+>>>>>>> 445c295f3e7d9c6845ab54bee9b5f8f6f64278f1
