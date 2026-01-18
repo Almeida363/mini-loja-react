@@ -5,26 +5,27 @@ import ProductCard from './ProductCard';
 const ProductList = ({ products, setProducts }) => {
     
     useEffect(() => {
-        // Buscamos produtos da API para não começar com a loja vazia
-        axios.get('https://fakestoreapi.com/products?limit=8')
-            .then(res => {
-                // Mapeamos os dados para transformar roupas/eletrônicos em itens de arte
-                const artData = res.data.map((item, index) => ({
-                    ...item,
-                    title: `Material de Arte #${item.id}`,
-                    // Usamos imagens reais de arte do Unsplash
-                    image: `https://images.unsplash.com/photo-1513364776144-60967b0f800f?sig=${index}&w=500`,
-                    description: "Este é um produto de alta qualidade, selecionado especialmente para artistas que buscam perfeição em suas obras de aquarela e técnicas mistas."
-                }));
-                setProducts(artData);
-            })
-            .catch(err => console.error("Erro ao carregar API", err));
-    }, [setProducts]);
+        if (products.length === 0) {
+            axios.get('https://fakestoreapi.com/products?limit=6')
+                .then(res => {
+                    const artData = res.data.map((item, index) => ({
+                        ...item,
+                        // 💡 ALTERE AQUI: O nome padrão dos itens vindos da API e a descrição
+                        title: `Pintura em Aquarela #${item.id}`,
+                        description: 'Trabalho original feito à mão com pigmentos profissionais sobre papel 100% algodão.',
+                        // 💡 ALTERE AQUI: O termo de busca para as fotos (ex: 'dog', 'fashion', 'tech')
+                        image: `https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?sig=${index}&w=500`,
+                    }));
+                    setProducts(artData);
+                })
+                .catch(err => console.error(err));
+        }
+    }, [setProducts, products.length]);
 
     return (
-        <div className="grid mt-2">
+        <div className="grid">
             {products.map(item => (
-                <div key={item.id} className="col-12 sm:col-6 lg:col-3 p-2">
+                <div key={item.id} className="col-12 sm:col-6 lg:col-4 p-2">
                     <ProductCard product={item} />
                 </div>
             ))}

@@ -1,41 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button } from 'primereact/button';
 
-// --- IMPORTAÇÕES DE ESTILO (A "ROUPA" DO PROJETO) ---
-import "primereact/resources/themes/lara-light-blue/theme.css";     // Tema visual moderno
-import "primereact/resources/primereact.min.css";                  // Base dos componentes
-import "primeicons/primeicons.css";                                // Ícones (carrinho, plus, etc)
-import "/node_modules/primeflex/primeflex.css";                   // Sistema de colunas e margens
+import "primereact/resources/themes/lara-light-teal/theme.css"; 
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+import "/node_modules/primeflex/primeflex.css";
 
-// --- IMPORTAÇÕES DOS NOSSOS COMPONENTES ---
-import ProductList from './components/ProductList';
+import Storefront from './views/Storefront';
 import ProductForm from './components/ProductForms';
 
 function App() {
-  // Criamos o estado 'products' que vai guardar nossa lista de aquarelas/produtos.
-  // Começa como um array vazio [].
-  const [products, setProducts] = useState([]);
+  // 💡 ALTERE AQUI: O estado agora tenta buscar dados do localStorage primeiro. 
+  // Se não tiver nada lá, ele começa com um array vazio.
+  const [products, setProducts] = useState(() => {
+    const savedProducts = localStorage.getItem('meuAcervoArtes');
+    return savedProducts ? JSON.parse(savedProducts) : [];
+  });
 
-  // Função que recebe um novo produto do formulário e coloca na lista
+  const [view, setView] = useState('loja');
+
+  // 💡 ALTERE AQUI: Toda vez que a lista de produtos mudar, nós salvamos no "armário" do navegador
+  useEffect(() => {
+    localStorage.setItem('meuAcervoArtes', JSON.stringify(products));
+  }, [products]);
+
   const addProduct = (newProduct) => {
-    // Usamos o 'spread operator' (...) para manter os antigos e adicionar o novo no topo
-    setProducts([newProduct, ...products]); 
+    setProducts([newProduct, ...products]);
+    setView('loja'); 
   };
 
   return (
-    // 'surface-ground' dá um fundo cinza claro profissional, 'p-5' é o espaçamento
-    <div className="p-5 surface-ground min-h-screen">
-      <div className="container mx-auto">
-        <h1 className="text-center text-4xl mb-5 text-primary font-bold">
-          <i className="pi pi-palette mr-2"></i> {/* Ícone de paleta de cores */}
-          Ateliê de Aquarela & Cia
-        </h1>
-        
-        {/* Passamos a função de adicionar como uma "prop" chamada onAddProduct */}
-        <ProductForm onAddProduct={addProduct} />
-        
-        {/* Passamos a lista e a função de atualizar para o componente de listagem */}
-        <ProductList products={products} setProducts={setProducts} />
-      </div>
+    <div className="bg-bluegray-50 min-h-screen">
+      <header className="bg-teal-700 text-white p-4 shadow-3">
+        <div className="max-w-custom mx-auto flex justify-content-between align-items-center" style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h1 className="m-0 text-xl md:text-2xl font-light tracking-wide cursor-pointer" onClick={() => setView('loja')}>
+            <i className="pi pi-palette mr-2"></i> ARTES & CORES
+          </h1>
+          
+          <Button 
+            label={view === 'loja' ? "Cadastrar Nova Arte" : "Voltar para Galeria"} 
+            icon={view === 'loja' ? "pi pi-plus" : "pi pi-arrow-left"} 
+            className="p-button-sm p-button-info"
+            onClick={() => setView(view === 'loja' ? 'cadastro' : 'loja')}
+          />
+        </div>
+      </header>
+
+      <main className="p-4 md:p-6 mx-auto" style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        {view === 'loja' ? (
+          <Storefront products={products} setProducts={setProducts} />
+        ) : (
+          <div className="fadein">
+            <h2 className="text-teal-900 mb-4">Novo Item no Acervo</h2>
+            <ProductForm onAddProduct={addProduct} />
+          </div>
+        )}
+      </main>
     </div>
   );
 }
